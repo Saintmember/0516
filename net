@@ -1,0 +1,26 @@
+file="cash.scan"
+net="10.7.180."
+
+diapazon=$(echo {127..135})
+
+if [ -s $file ]
+then
+log=( $(cat $file) )
+now='='
+for i in $diapazon
+do
+	ip="$net$i"
+	ping -c1 $ip &>>/dev/null && now="+" || now="-"
+	if [ $now != ${log[$i]} ]
+	then
+		echo "$ip $now"
+		log[$i]=$now
+	fi
+done
+echo ${log[@]}>$file
+else
+for i in {0..255}
+do
+        echo "="
+done >>$file
+fi
